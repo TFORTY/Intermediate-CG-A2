@@ -100,17 +100,17 @@ void Scene::LoadTexImage()
 		else std::cout << "Failed to load image" << std::endl;
 }
 
-Entity Scene::GetFBO()
-{
-	return FBO;
-}
-
-Entity Scene::GetGreyscaleEnt()
-{
-	return greyscaleEnt;
-}
-
-std::vector<PostEffect*> Scene::GetEffects()
-{
-	return effects;
-}
+//Entity Scene::GetFBO()
+//{
+//	return FBO;
+//}
+//
+//Entity Scene::GetGreyscaleEnt()
+//{
+//	return greyscaleEnt;
+//}
+//
+//std::vector<PostEffect*> Scene::GetEffects()
+//{
+//	return effects;
+//}

@@ -27,8 +27,8 @@ MainMenuLevel::MainMenuLevel(std::string sceneName, GLFWwindow* wind)
 	startEnt = Entity::Create();
 	optEnt = Entity::Create();
 	exitEnt = Entity::Create();
-	FBO = Entity::Create();
-	greyscaleEnt = Entity::Create();
+	//FBO = Entity::Create();
+	//greyscaleEnt = Entity::Create();
 
 	drumstick = ModelManager::FindMesh(drumFile);
 	floor = ModelManager::FindMesh(floorFile);
@@ -77,7 +77,7 @@ void MainMenuLevel::InitScene()
 
 	totalTime = distance / speed;
 
-	effects.clear();
+	//effects.clear();
 
 #pragma region Shader Stuff
 
@@ -307,7 +307,7 @@ void MainMenuLevel::InitScene()
 	camera.SetFovDegrees(90.0f); // Set an initial FOV
 
 
-	int width, height;
+	/*int width, height;
 	glfwGetWindowSize(window, &width, &height);
 
 	auto basicEffect = &FBO.Add<PostEffect>();
@@ -316,7 +316,7 @@ void MainMenuLevel::InitScene()
 	auto greyscaleEffect = &greyscaleEnt.Add<Greyscale>();
 	greyscaleEffect->Init(width, height);
 
-	effects.push_back(greyscaleEffect);
+	effects.push_back(greyscaleEffect);*/
 }
 
 void MainMenuLevel::Update(float dt)
@@ -573,14 +573,14 @@ void MainMenuLevel::Update(float dt)
 	floorShader->SetUniform("u_LightNum", lightNum);
 	levelShader->SetUniform("u_LightNum", lightNum);
 
-	auto basicEffect = &FBO.Get<PostEffect>();
+	/*auto basicEffect = &FBO.Get<PostEffect>();
 	auto greyscaleEffect = &greyscaleEnt.Get<Greyscale>();
 
 	basicEffect->Clear();
 	greyscaleEffect->Clear();
 
 
-	basicEffect->BindBuffer(0);
+	basicEffect->BindBuffer(0);*/
 
 #pragma region Renders
 		playerShader->Bind();
@@ -614,11 +614,11 @@ void MainMenuLevel::Update(float dt)
 		doorMat.Albedo->Unbind(0);	
 #pragma endregion
 
-	basicEffect->UnbindBuffer();
+	/*basicEffect->UnbindBuffer();
 
 	greyscaleEffect->ApplyEffect(basicEffect);
 
-	greyscaleEffect->DrawToScreen();
+	greyscaleEffect->DrawToScreen();*/
 
 	startDoor.Get<AABB>().Update();
 	optionDoor.Get<AABB>().Update();

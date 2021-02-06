@@ -65,24 +65,24 @@ int main()
 	//Application::InitImGui();
 
 	scenes.push_back(new MainMenu("Main Menu", window));
-	/*scenes.push_back(new MainMenuLevel("Main Menu Level", window));
+	scenes.push_back(new MainMenuLevel("Main Menu Level", window));
 	scenes.push_back(new Level1("Level 1", window));
-	scenes.push_back(new Level2("Level 2", window));
-	scenes.push_back(new Level3("Level 3", window));*/
+	//scenes.push_back(new Level2("Level 2", window));
+	//scenes.push_back(new Level3("Level 3", window));
 
-	SetActiveScene(0);
+	SetActiveScene(2);
 	
 	//Calculates our timer
 	Application::Tick();
 
-	int activeEffect = 0;
+	//int activeEffect = 0;
 
 	//ImGui Stuff
 	Application::imGuiCallbacks.push_back([&]() {
 
 		//Put tabs, headers, buttons and all that jazz in here
 
-		if (ImGui::CollapsingHeader("Effect Controls"))
+		/*if (ImGui::CollapsingHeader("Effect Controls"))
 		{
 			ImGui::SliderInt("Chosen Effect", &activeEffect, 0, currentScene->GetEffects().size() - 1);
 
@@ -99,7 +99,7 @@ int main()
 				}
 			}
 
-		}
+		}*/
 	});
 
 	Application::InitImGui();
