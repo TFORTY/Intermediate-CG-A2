@@ -78,7 +78,7 @@ int main()
 	//int activeEffect = 0;
 
 	//ImGui Stuff
-	Application::imGuiCallbacks.push_back([&]() {
+	//Application::imGuiCallbacks.push_back([&]() {
 
 		//Put tabs, headers, buttons and all that jazz in here
 
@@ -100,9 +100,9 @@ int main()
 			}
 
 		}*/
-	});
+	//});
 
-	Application::InitImGui();
+	//Application::InitImGui();
 
 	//Main Loop//
 	while (!Application::IsClosing()) {
@@ -156,7 +156,7 @@ int main()
 
 		currentScene->Update(dt);
 
-		Application::RenderImGui();
+		//Application::RenderImGui();
 
 		Application::SwapBuffers();
 	}
