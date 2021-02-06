@@ -1,4 +1,5 @@
 #include "PostEffect.h"
+
 namespace freebird
 {
 	void PostEffect::Init(unsigned width, unsigned height)
