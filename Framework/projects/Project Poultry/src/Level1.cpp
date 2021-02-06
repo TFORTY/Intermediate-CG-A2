@@ -17,6 +17,7 @@ using namespace freebird;
 Level1::Level1(std::string sceneName, GLFWwindow* wind)
 	: Scene(sceneName, wind)
 {
+#pragma region Entity Creation
 	mainPlayer = Entity::Create();
 	floorEnt = Entity::Create();
 	leftEnt = Entity::Create();
@@ -82,6 +83,7 @@ Level1::Level1(std::string sceneName, GLFWwindow* wind)
 	walk12 = ModelManager::FindMesh(walkFile12);
 	walk13 = ModelManager::FindMesh(walkFile13);
 	walk14 = ModelManager::FindMesh(walkFile14);
+#pragma endregion
 }
 
 void Level1::InitScene()
@@ -95,6 +97,8 @@ void Level1::InitScene()
 	float distance = glm::distance(point2, point1);
 
 	totalTime = distance / speed;
+
+	Application::InitImGui();
 
 #pragma region Shader Stuff
 
@@ -230,7 +234,7 @@ void Level1::InitScene()
 
 #pragma endregion
 
-
+#pragma region Transforms
 	//Transforms
 	auto& particleTrans = particleEnt.Add<Transform>();
 	particleTrans.SetPosition(glm::vec3(0.0f, 4.0f, -2.0f));
@@ -291,8 +295,9 @@ void Level1::InitScene()
 	auto& completeTrans = completeEnt.Add<Transform>();
 	completeTrans.SetPosition(glm::vec3(0.0f, 1.0f, 0.0f));
 	completeTrans.SetScale(glm::vec3(0.22f));
+#pragma endregion
 
-
+#pragma region Objects
 	//AABB
 	auto& leftCol = leftEnt.Add<AABB>(leftEnt, mainPlayer);
 	auto& rightCol = rightEnt.Add<AABB>(rightEnt, mainPlayer);
@@ -322,7 +327,9 @@ void Level1::InitScene()
 
 	//Particle
 	auto& particleSystem = particleEnt.Add<ParticleSystem>(particleEnt, particleData);
+#pragma endregion
 
+#pragma region Animation Frames
 	doorFrames.push_back(std::unique_ptr<Mesh>(door1));
 	doorFrames.push_back(std::unique_ptr<Mesh>(door2));
 	doorFrames.push_back(std::unique_ptr<Mesh>(door3));
@@ -345,7 +352,6 @@ void Level1::InitScene()
 	doorCloseFrames.push_back(std::unique_ptr<Mesh>(door2));
 	doorCloseFrames.push_back(std::unique_ptr<Mesh>(door1));
 
-
 	walkFrames.push_back(std::unique_ptr<Mesh>(walk1));
 	walkFrames.push_back(std::unique_ptr<Mesh>(walk2));
 	walkFrames.push_back(std::unique_ptr<Mesh>(walk3));
@@ -360,7 +366,9 @@ void Level1::InitScene()
 	walkFrames.push_back(std::unique_ptr<Mesh>(walk12));
 	walkFrames.push_back(std::unique_ptr<Mesh>(walk13));
 	walkFrames.push_back(std::unique_ptr<Mesh>(walk14));
+#pragma endregion
 
+#pragma region Renderers
 	auto& playerMesh = mainPlayer.Add<MorphRenderer>(mainPlayer, *drumstick, playerShader);
 	auto& floorMesh = floorEnt.Add<MeshRenderer>(floorEnt, *floor, floorShader);
 	auto& leftMesh = leftEnt.Add<MeshRenderer>(leftEnt, *wall, levelShader);
@@ -390,7 +398,9 @@ void Level1::InitScene()
 	auto& walkAnimator = mainPlayer.Add<MorphAnimation>(mainPlayer);
 	walkAnimator.SetTime(0.05f);
 	walkAnimator.SetFrames(walkFrames);
+#pragma endregion
 
+#pragma region Camera
 	auto& camera = camEnt.Add<Camera>();
 
 	camera.SetPosition(glm::vec3(0, 15, mainPlayer.Get<Transform>().GetPositionZ() + 12)); // Set initial position
@@ -403,11 +413,18 @@ void Level1::InitScene()
 	orthoCam.SetUp(glm::vec3(0, 0, -1)); // Use a z-up coordinate system
 	orthoCam.LookAt(glm::vec3(0.0f)); // Look at center of the screen
 	orthoCam.SetFovDegrees(90.0f); // Set an initial FOV
+#pragma endregion
+
+	Application::imGuiCallbacks.push_back([&]() {
+		if (ImGui::CollapsingHeader("Effect Controls"))
+		{
+			ImGui::Text("HELLO CHRIS");
+		}
+	});
 }
 
 void Level1::Update(float dt)
 {
-
 	time += dt;
 	playerShader->SetUniform("u_Time", time);
 	levelShader->SetUniform("u_Time", time);
@@ -448,6 +465,7 @@ void Level1::Update(float dt)
 	else
 		doorEnt.Get<MorphAnimation>().SetFrames(doorCloseFrames);
 
+#pragma region Transforms
 	//Transforms
 	auto& playerTrans = mainPlayer.Get<Transform>();
 	auto& groundTrans = floorEnt.Get<Transform>();
@@ -476,12 +494,15 @@ void Level1::Update(float dt)
 	rightTrans.SetPositionX(39.0f);
 	rightTrans.SetRotationY(90.0f);
 	rightTrans.SetPositionY(9.0f);
+#pragma endregion
+
 
 	auto& camera = camEnt.Get<Camera>();
 	auto& orthoCam = uiCamEnt.Get<Camera>();
 
 	camera.LookAt(glm::vec3(playerTrans.GetPositionX(), playerTrans.GetPositionY() + 5.0f, playerTrans.GetPositionZ()));
 
+#pragma region Meshes
 	auto& meshMain = mainPlayer.Get<MorphRenderer>();
 	auto& groundMesh = floorEnt.Get<MeshRenderer>();
 	auto& leftMesh = leftEnt.Get<MeshRenderer>();
@@ -502,8 +523,9 @@ void Level1::Update(float dt)
 	auto& coilMeshP = coilPowered.Get<MeshRenderer>();
 	auto& completeMesh = completeEnt.Get<MeshRenderer>();
 	auto& tutMesh = tutEnt.Get<MeshRenderer>();
+#pragma endregion
 
-
+#pragma region Matrices
 	glm::mat4 transform = playerTrans.GetModelMatrix();
 	glm::mat4 transformGround = groundTrans.GetModelMatrix();
 	glm::mat4 transformLeft = leftTrans.GetModelMatrix();
@@ -520,6 +542,7 @@ void Level1::Update(float dt)
 	glm::mat4 transformCoil = coilTrans.GetModelMatrix();
 	glm::mat4 transformComplete = completeTrans.GetModelMatrix();
 	glm::mat4 transformTut = tutTrans.GetModelMatrix();
+#pragma endregion
 
 	auto& particleSystem = particleEnt.Get<ParticleSystem>();
 
@@ -537,8 +560,7 @@ void Level1::Update(float dt)
 		{
 			levelComplete = true;
 			lightNum = 5;
-		}
-		
+		}	
 	}
 
 #pragma region PlayerMovement
@@ -819,6 +841,8 @@ void Level1::Update(float dt)
 
 	if (doorEnt.Get<AABB>().GetComplete())
 		showLevelComplete = true;
+
+	Application::RenderImGui();
 }
 
 void Level1::Unload()
@@ -829,5 +853,6 @@ void Level1::Unload()
 
 		scene = nullptr;
 	}
-}
 
+	Application::ShutdownImGui();
+}
