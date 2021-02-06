@@ -17,7 +17,10 @@ namespace freebird
         _shaders[index]->LoadShaderPartFromFile("shaders/passthrough_vert.glsl", GL_VERTEX_SHADER);
         _shaders[index]->LoadShaderPartFromFile("shaders/Post/color_correction_frag.glsl", GL_FRAGMENT_SHADER);
         _shaders[index]->Link();
-        colorEffectCube.loadFromFile("cubes/test.cube");
+
+        //Loads the LUT
+        colorEffectCube.loadFromFile(cubeName);
+
         PostEffect::Init(width, height);
     }
    
@@ -37,8 +40,6 @@ namespace freebird
         buffer->UnbindTexture(0);
 
         UnbindShader();
-
-
     }
 
     //Getters
@@ -51,13 +52,5 @@ namespace freebird
     void ColorCorrection::SetCubeName(std::string name)
     {
         cubeName = name;
-
     }
-
-
 }
-
-
-
-
-

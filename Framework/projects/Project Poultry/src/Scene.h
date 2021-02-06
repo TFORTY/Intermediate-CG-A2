@@ -14,6 +14,8 @@
 #include <MeshRenderer.h>
 #include <ModelManager.h>
 
+#include "ColorCorrection.h"
+
 using namespace freebird;
 
 class Scene
