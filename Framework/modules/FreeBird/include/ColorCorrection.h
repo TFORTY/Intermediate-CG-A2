@@ -15,6 +15,7 @@ namespace freebird
 	//Applies effect to this buffer
 	void ApplyEffect(PostEffect* buffer) override;
 
+	//
 
 	private:
 	//Create a LUT variable
