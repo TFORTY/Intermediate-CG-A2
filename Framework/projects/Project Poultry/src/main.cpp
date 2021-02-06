@@ -129,7 +129,7 @@ int main()
 			SetActiveScene(2);
 		}
 		if (glfwGetKey(window, GLFW_KEY_KP_1) == GLFW_PRESS)
-		{
+		{ 
 			SetActiveScene(1);
 		}
 		if (glfwGetKey(window, GLFW_KEY_KP_0) == GLFW_PRESS)

@@ -126,7 +126,7 @@ void Level1::InitScene()
 
 	SetShaderValues(levelShader, lightPos, lightDir, lightCol, lightAmbientPow, lightSpecularPow, lightSpecularPow2, ambientCol, ambientPow, shininess);
 
-	floorShader = Shader::Create();
+	floorShader = Shader::Create(); 
 	floorShader->LoadShaderPartFromFile("Shaders/vertex_shader.glsl", GL_VERTEX_SHADER);
 	floorShader->LoadShaderPartFromFile("Shaders/frag_shader.glsl", GL_FRAGMENT_SHADER);
 	floorShader->Link();
@@ -724,6 +724,27 @@ void Level1::Update(float dt)
 		camera.SetPosition(glm::vec3(camera.GetPosition().x, camera.GetPosition().y - 10 * dt, camera.GetPosition().z));
 	}
 #pragma endregion
+
+	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+	{
+		lightNum = 1; 
+	} 
+	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+	{
+		lightNum = 2;
+	}
+	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+	{
+		lightNum = 3;
+	}
+	if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
+	{
+		lightNum = 4;
+	}
+	if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
+	{
+		lightNum = 5;
+	}
 
 	if (lightNum < 1 || lightNum > 5)
 		lightNum = 1;

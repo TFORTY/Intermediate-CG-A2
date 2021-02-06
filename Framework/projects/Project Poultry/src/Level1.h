@@ -146,7 +146,7 @@ private:
 	bool camClose = false;
 	bool camFar = false;
 
-	int lightNum = 5;
+	int lightNum = 1;
 
 	bool showLevelComplete = false;
 
