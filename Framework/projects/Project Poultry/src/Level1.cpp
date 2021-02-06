@@ -853,6 +853,4 @@ void Level1::Unload()
 
 		scene = nullptr;
 	}
-
-	Application::ShutdownImGui();
 }

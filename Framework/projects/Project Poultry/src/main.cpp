@@ -65,12 +65,12 @@ int main()
 	//Application::InitImGui();
 
 	scenes.push_back(new MainMenu("Main Menu", window));
-	scenes.push_back(new MainMenuLevel("Main Menu Level", window));
+	/*scenes.push_back(new MainMenuLevel("Main Menu Level", window));
 	scenes.push_back(new Level1("Level 1", window));
 	scenes.push_back(new Level2("Level 2", window));
-	scenes.push_back(new Level3("Level 3", window));
+	scenes.push_back(new Level3("Level 3", window));*/
 
-	SetActiveScene(2);
+	SetActiveScene(0);
 	
 	//Calculates our timer
 	Application::Tick();
@@ -161,7 +161,7 @@ int main()
 		Application::SwapBuffers();
 	}
 
-	//Application::ShutdownImGui();
+	Application::ShutdownImGui();
 
 	//Cleans up the window and glfw
 	Application::Cleanup();
