@@ -16,10 +16,7 @@ namespace freebird
 	void ApplyEffect(PostEffect* buffer) override;
 
 
-
 	private:
-
-
 	//Create a LUT variable
 	LUT3D colorEffectCube;
 };
