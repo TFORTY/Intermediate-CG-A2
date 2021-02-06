@@ -101,7 +101,6 @@ void Level1::InitScene()
 	Application::InitImGui();
 
 #pragma region Shader Stuff
-
 	glm::vec3 lightPos = glm::vec3(0.0f, 9.5f, -35.0f);
 	glm::vec3 lightDir = glm::vec3(0.0f, -1.0f, 0.0f);
 	glm::vec3 lightCol = glm::vec3(1.f, 1.f, 1.f);
@@ -496,7 +495,6 @@ void Level1::Update(float dt)
 	rightTrans.SetPositionY(9.0f);
 #pragma endregion
 
-
 	auto& camera = camEnt.Get<Camera>();
 	auto& orthoCam = uiCamEnt.Get<Camera>();
 
@@ -725,26 +723,33 @@ void Level1::Update(float dt)
 	}
 #pragma endregion
 
+#pragma region Key Toggles 
+	//No Lighting (on by default)
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 	{
 		lightNum = 1; 
 	} 
+	//Ambient Only
 	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
 	{
 		lightNum = 2;
 	}
+	//Specular Only
 	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
 	{
 		lightNum = 3;
 	}
+	//Ambient + Specular + Diffuse
 	if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
 	{
 		lightNum = 4;
 	}
+	//Ambient + Specular + Diffuse + Toon Shading
 	if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
 	{
 		lightNum = 5;
 	}
+#pragma endregion
 
 	if (lightNum < 1 || lightNum > 5)
 		lightNum = 1;
