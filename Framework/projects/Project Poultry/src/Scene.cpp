@@ -16,7 +16,6 @@ void Scene::InitScene()
 
 	Entity::SetReg(scene);
 
-
 	//Set Up Camera
 	Entity camEnt = Entity::Create();
 	auto& camera = camEnt.Add<Camera>();
@@ -99,18 +98,3 @@ void Scene::LoadTexImage()
 			std::cout << "Image loaded: " << width << " x " << height << std::endl;
 		else std::cout << "Failed to load image" << std::endl;
 }
-
-//Entity Scene::GetFBO()
-//{
-//	return FBO;
-//}
-//
-//Entity Scene::GetGreyscaleEnt()
-//{
-//	return greyscaleEnt;
-//}
-//
-//std::vector<PostEffect*> Scene::GetEffects()
-//{
-//	return effects;
-//}
