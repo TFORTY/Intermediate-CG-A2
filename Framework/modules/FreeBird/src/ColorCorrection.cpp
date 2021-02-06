@@ -41,6 +41,19 @@ namespace freebird
 
     }
 
+    //Getters
+    std::string ColorCorrection::GetCubeName()
+    {
+        return cubeName;
+    }
+
+    //Setters
+    void ColorCorrection::SetCubeName(std::string name)
+    {
+        cubeName = name;
+
+    }
+
 
 }
 
