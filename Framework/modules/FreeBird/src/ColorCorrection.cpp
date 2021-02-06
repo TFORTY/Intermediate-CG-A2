@@ -25,9 +25,11 @@ namespace freebird
     {
         BindShader(0);
 
+        //Bind previous framebuffer to the texutre as a color
         buffer->BindColorAsTexture(0, 0, 0);
         colorEffectCube.bind(30);
-
+        
+        //Render buffer as full screen quad
         _buffers[0]->RenderToFSQ();
 
         colorEffectCube.unbind(30);
