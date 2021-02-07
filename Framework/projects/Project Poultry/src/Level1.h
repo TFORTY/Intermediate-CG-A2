@@ -38,6 +38,12 @@ private:
 	Entity tutEnt;
 	Entity completeEnt;
 
+	//Create color effect objects
+	Entity warmColorEnt;
+
+	PostEffect* basicEffect;
+	ColorCorrection* warmEffect;
+
 	Shader::sptr playerShader, levelShader, floorShader, gateShader, wireShader, doorShader, buttonShader, particleShader, untexturedShader, uiShader;
 
 	GLfloat time = 0.0f;
@@ -146,7 +152,10 @@ private:
 	bool camClose = false;
 	bool camFar = false;
 
-	int lightNum = 5;
+	int lightNum = 1;
+
+	//Key toggles for activating the color effects
+	bool warmActive = false;
 
 	bool showLevelComplete = false;
 
@@ -158,5 +167,11 @@ private:
 	KeyPressWatcher button2Watch = KeyPressWatcher(GLFW_KEY_E, [&]() {
 		buttonEnt2.Get<Lever>().SetPowered(!buttonEnt2.Get<Lever>().GetPowered());
 		std::cout << "Button 2 Power: " << buttonEnt2.Get<Lever>().GetPowered() << std::endl;
+		});
+
+	//Toggles the color effects
+	//Toggles the warm color correction effect
+	KeyPressWatcher warmWatch = KeyPressWatcher(GLFW_KEY_8, [&]() {
+		warmActive = !warmActive;
 		});
 };

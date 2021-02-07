@@ -17,7 +17,6 @@
 #include "MainMenuLevel.h"
 #include "Application.h"
 #include <ModelManager.h>
-#include "Greyscale.h"
 
 using namespace freebird; //referencing the module's includes/src's
 
@@ -62,8 +61,6 @@ int main()
 	//Sets the clear colour of the window
 	Application::SetClearColor(glm::vec4(0.08f, 0.17f, 0.31f, 1.0f));
 
-	//Application::InitImGui();
-
 	scenes.push_back(new MainMenu("Main Menu", window));
 	scenes.push_back(new MainMenuLevel("Main Menu Level", window));
 	scenes.push_back(new Level1("Level 1", window));
@@ -74,35 +71,6 @@ int main()
 	
 	//Calculates our timer
 	Application::Tick();
-
-	//int activeEffect = 0;
-
-	//ImGui Stuff
-	//Application::imGuiCallbacks.push_back([&]() {
-
-		//Put tabs, headers, buttons and all that jazz in here
-
-		/*if (ImGui::CollapsingHeader("Effect Controls"))
-		{
-			ImGui::SliderInt("Chosen Effect", &activeEffect, 0, currentScene->GetEffects().size() - 1);
-
-			if (activeEffect == 0)
-			{
-				ImGui::Text("Active Effect: Greyscale");
-
-				Greyscale* temp = (Greyscale*)currentScene->GetEffects()[activeEffect];
-				float intensity = temp->GetIntensity();
-
-				if (ImGui::SliderFloat("Intensity", &intensity, 0.0f, 1.0f))
-				{
-					temp->SetIntensity(intensity);
-				}
-			}
-
-		}*/
-	//});
-
-	//Application::InitImGui();
 
 	//Main Loop//
 	while (!Application::IsClosing()) {
@@ -129,7 +97,7 @@ int main()
 			SetActiveScene(2);
 		}
 		if (glfwGetKey(window, GLFW_KEY_KP_1) == GLFW_PRESS)
-		{
+		{ 
 			SetActiveScene(1);
 		}
 		if (glfwGetKey(window, GLFW_KEY_KP_0) == GLFW_PRESS)
@@ -153,15 +121,10 @@ int main()
 			SetActiveScene(1);
 		}
 
-
 		currentScene->Update(dt);
-
-		//Application::RenderImGui();
 
 		Application::SwapBuffers();
 	}
-
-	Application::ShutdownImGui();
 
 	//Cleans up the window and glfw
 	Application::Cleanup();

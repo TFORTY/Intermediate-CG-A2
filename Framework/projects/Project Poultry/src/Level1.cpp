@@ -41,6 +41,10 @@ Level1::Level1(std::string sceneName, GLFWwindow* wind)
 	completeEnt = Entity::Create();
 	tutEnt = Entity::Create();
 
+	//Create and entity object
+	FBO = Entity::Create();
+	warmColorEnt = Entity::Create();
+
 	drumstick = ModelManager::FindMesh(drumFile);
 	floor = ModelManager::FindMesh(floorFile);
 	wall = ModelManager::FindMesh(wallFile);
@@ -98,10 +102,7 @@ void Level1::InitScene()
 
 	totalTime = distance / speed;
 
-	Application::InitImGui();
-
 #pragma region Shader Stuff
-
 	glm::vec3 lightPos = glm::vec3(0.0f, 9.5f, -35.0f);
 	glm::vec3 lightDir = glm::vec3(0.0f, -1.0f, 0.0f);
 	glm::vec3 lightCol = glm::vec3(1.f, 1.f, 1.f);
@@ -126,7 +127,7 @@ void Level1::InitScene()
 
 	SetShaderValues(levelShader, lightPos, lightDir, lightCol, lightAmbientPow, lightSpecularPow, lightSpecularPow2, ambientCol, ambientPow, shininess);
 
-	floorShader = Shader::Create();
+	floorShader = Shader::Create(); 
 	floorShader->LoadShaderPartFromFile("Shaders/vertex_shader.glsl", GL_VERTEX_SHADER);
 	floorShader->LoadShaderPartFromFile("Shaders/frag_shader.glsl", GL_FRAGMENT_SHADER);
 	floorShader->Link();
@@ -180,7 +181,6 @@ void Level1::InitScene()
 	uiShader->Link();
 
 	SetShaderValues(uiShader, lightPos, lightDir, lightCol, lightAmbientPow, lightSpecularPow, lightSpecularPow2, ambientCol, ambientPow, shininess);*/
-
 #pragma endregion
 
 #pragma region Texture Stuff
@@ -415,12 +415,16 @@ void Level1::InitScene()
 	orthoCam.SetFovDegrees(90.0f); // Set an initial FOV
 #pragma endregion
 
-	Application::imGuiCallbacks.push_back([&]() {
-		if (ImGui::CollapsingHeader("Effect Controls"))
-		{
-			ImGui::Text("HELLO CHRIS");
-		}
-	});
+	//Load the color cube effect
+	int width, height;
+	glfwGetWindowSize(window, &width, &height);
+
+	basicEffect = &FBO.Add<PostEffect>();
+	basicEffect->Init(width, height);
+
+	auto warmColorEffect = &warmColorEnt.Add<ColorCorrection>();
+	warmColorEffect->SetCubeName("WarmHald.cube");
+	warmColorEffect->Init(width, height);
 }
 
 void Level1::Update(float dt)
@@ -495,7 +499,6 @@ void Level1::Update(float dt)
 	rightTrans.SetRotationY(90.0f);
 	rightTrans.SetPositionY(9.0f);
 #pragma endregion
-
 
 	auto& camera = camEnt.Get<Camera>();
 	auto& orthoCam = uiCamEnt.Get<Camera>();
@@ -725,6 +728,37 @@ void Level1::Update(float dt)
 	}
 #pragma endregion
 
+#pragma region Key Toggles 
+	//No Lighting (on by default)
+	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+	{
+		lightNum = 1; 
+	} 
+	//Ambient Only
+	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+	{
+		lightNum = 2;
+	}
+	//Specular Only
+	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+	{
+		lightNum = 3;
+	}
+	//Ambient + Specular + Diffuse
+	if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
+	{
+		lightNum = 4;
+	}
+	//Ambient + Specular + Diffuse + Toon Shading
+	if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
+	{
+		lightNum = 5;
+	}
+
+	warmWatch.Poll(window);
+
+#pragma endregion
+
 	if (lightNum < 1 || lightNum > 5)
 		lightNum = 1;
 
@@ -736,6 +770,17 @@ void Level1::Update(float dt)
 	wireShader->SetUniform("u_LightNum", lightNum);
 	untexturedShader->SetUniform("u_LightNum", lightNum);
 	buttonShader->SetUniform("u_LightNum", lightNum);
+
+	//Get the color correction effects
+	basicEffect = &FBO.Get<PostEffect>();
+	warmEffect = &warmColorEnt.Get<ColorCorrection>();
+
+	//Clear the color correction effects
+	basicEffect->Clear();
+	warmEffect->Clear();
+
+	//Bind the buffer
+	basicEffect->BindBuffer(0);
 
 #pragma region Renders
 	if (!showLevelComplete)
@@ -822,6 +867,22 @@ void Level1::Update(float dt)
 
 
 #pragma endregion
+	
+	//Unbind the buffer
+	basicEffect->UnbindBuffer();
+
+	//If warm effect is toggled, draw it
+	if (warmActive)
+	{
+		warmEffect->ApplyEffect(basicEffect);
+		warmEffect->DrawToScreen();
+	}
+	//Draw the default color correction
+	else
+	{
+		basicEffect->ApplyEffect(basicEffect);
+		basicEffect->DrawToScreen();
+	}
 
 	leftEnt.Get<AABB>().Update();
 	rightEnt.Get<AABB>().Update();
@@ -841,8 +902,6 @@ void Level1::Update(float dt)
 
 	if (doorEnt.Get<AABB>().GetComplete())
 		showLevelComplete = true;
-
-	Application::RenderImGui();
 }
 
 void Level1::Unload()

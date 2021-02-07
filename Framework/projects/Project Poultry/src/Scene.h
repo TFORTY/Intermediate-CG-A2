@@ -14,6 +14,8 @@
 #include <MeshRenderer.h>
 #include <ModelManager.h>
 
+#include "ColorCorrection.h"
+
 using namespace freebird;
 
 class Scene
@@ -55,6 +57,9 @@ public:
 
 	void LoadTexImage();
 
+	//Get FBO object
+	Entity GetFBO() { return FBO; }
+
 protected:
 
 	entt::registry* scene = nullptr;
@@ -65,6 +70,9 @@ protected:
 	GLFWwindow* window;
 
 	Entity camEnt, uiCamEnt;
+
+	//Create FBO Object
+	Entity FBO;
 
 	std::vector<Entity> ents;
 
