@@ -126,8 +126,6 @@ int main()
 		Application::SwapBuffers();
 	}
 
-	Application::ShutdownImGui();
-
 	//Cleans up the window and glfw
 	Application::Cleanup();
 

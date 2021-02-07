@@ -4,9 +4,7 @@
 #include <string>
 
 namespace freebird
-
 {
-
 	class ColorCorrection: public PostEffect
 	{
 	public:
@@ -29,7 +27,5 @@ namespace freebird
 
 	//String variable that will store 'cube name' valuable from setter function
 	std::string cubeName;
-};
-
+	};
 }
-
