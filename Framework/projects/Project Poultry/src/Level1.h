@@ -40,9 +40,13 @@ private:
 
 	//Create color effect objects
 	Entity warmColorEnt;
+	Entity coolColorEnt;
+	Entity customColorEnt;
 
 	PostEffect* basicEffect;
 	ColorCorrection* warmEffect;
+	ColorCorrection* coolEffect;
+	ColorCorrection* customEffect;
 
 	Shader::sptr playerShader, levelShader, floorShader, gateShader, wireShader, doorShader, buttonShader, particleShader, untexturedShader, uiShader;
 
@@ -156,6 +160,8 @@ private:
 
 	//Key toggles for activating the color effects
 	bool warmActive = false;
+	bool coolActive = false;
+	bool customActive = false;
 
 	bool showLevelComplete = false;
 
@@ -173,5 +179,22 @@ private:
 	//Toggles the warm color correction effect
 	KeyPressWatcher warmWatch = KeyPressWatcher(GLFW_KEY_8, [&]() {
 		warmActive = !warmActive;
+		coolActive = false;
+		customActive = false;
+
 		});
+
+	//Toggles the cool color correction effect
+	KeyPressWatcher coolWatch = KeyPressWatcher(GLFW_KEY_9, [&]() {
+		coolActive = !coolActive;
+		warmActive = false;
+		customActive = false;
+	});
+
+	//Toggles the custom color correction effect
+	KeyPressWatcher customWatch = KeyPressWatcher(GLFW_KEY_0, [&]() {
+		customActive = !customActive;
+		coolActive = false;
+		warmActive = false;
+	});
 };
