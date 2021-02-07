@@ -54,6 +54,9 @@ private:
 
 	Mat buttonMat, drumstickMat, doorMat, floorMat, wallMat, wireMat, coilMat, gateMat, completeMat;
 
+	//Material for the ramp texture
+	Mat rampMat;
+
 	std::vector<std::unique_ptr<Mesh>> doorFrames, walkFrames, doorCloseFrames;
 
 	Mesh* drumstick;
@@ -156,7 +159,8 @@ private:
 	bool camClose = false;
 	bool camFar = false;
 
-	int lightNum = 1;
+	//Default toggle setting effect
+	int lightNum = 1; 
 
 	//Key toggles for activating the color effects
 	bool warmActive = false;
@@ -181,7 +185,6 @@ private:
 		warmActive = !warmActive;
 		coolActive = false;
 		customActive = false;
-
 		});
 
 	//Toggles the cool color correction effect
@@ -196,5 +199,29 @@ private:
 		customActive = !customActive;
 		coolActive = false;
 		warmActive = false;
+	});
+
+	//Toggles the diffuse ramp/warp effect
+	KeyPressWatcher diffuseRampWatch = KeyPressWatcher(GLFW_KEY_6, [&]() {
+		if (lightNum != 6)
+		{
+			lightNum = 6;
+		}
+		else
+		{
+			lightNum = 1;
+		}
+	});
+
+	//Toggles the specular ramp/warp effect
+	KeyPressWatcher specRampWatch = KeyPressWatcher(GLFW_KEY_7, [&]() {
+		if (lightNum != 7)
+		{
+			lightNum = 7;
+		}
+		else
+		{
+			lightNum = 1;
+		}
 	});
 };
