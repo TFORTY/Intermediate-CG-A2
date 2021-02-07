@@ -106,7 +106,7 @@ void Level1::InitScene()
 	totalTime = distance / speed;
 
 #pragma region Shader Stuff
-	glm::vec3 lightPos = glm::vec3(0.0f, 9.5f, -35.0f);
+	glm::vec3 lightPos = glm::vec3(0.0f, 5.f, 0.0f); //9.5, -35 //can play around with the position of the light
 	glm::vec3 lightDir = glm::vec3(0.0f, -1.0f, 0.0f);
 	glm::vec3 lightCol = glm::vec3(1.f, 1.f, 1.f);
 	float     lightAmbientPow = 0.05f;
@@ -196,7 +196,10 @@ void Level1::InitScene()
 	Texture2DData::sptr uiMap = Texture2DData::LoadFromFile("Textures/Buttons/Default/Option.png");
 	Texture2DData::sptr completeMap = Texture2DData::LoadFromFile("Textures/LevelComplete.png");
 
-	Texture2D::sptr diffuseButton = Texture2D::Create();
+	//Create ramp texture here
+	Texture2DData::sptr rampMap = Texture2DData::LoadFromFile("Textures/Ramp.png");
+	
+	Texture2D::sptr diffuseButton = Texture2D::Create(); 
 	diffuseButton->LoadData(buttonMap);
 
 	Texture2D::sptr diffuseDrum = Texture2D::Create();
@@ -220,6 +223,10 @@ void Level1::InitScene()
 	Texture2D::sptr diffuseComplete = Texture2D::Create();
 	diffuseComplete->LoadData(completeMap);
 
+	//Load the ramp texture
+	Texture2D::sptr diffuseRamp = Texture2D::Create();
+	diffuseRamp->LoadData(rampMap);
+
 	Texture2DDescription desc = Texture2DDescription();
 	desc.Width = 1;
 	desc.Height = 1;
@@ -234,6 +241,9 @@ void Level1::InitScene()
 	wallMat.Albedo = diffuseWall;
 	wireMat.Albedo = diffuseWire;
 	completeMat.Albedo = diffuseComplete;
+
+	//Set the ramp texture mat
+	rampMat.Albedo = diffuseRamp;
 
 #pragma endregion
 
@@ -425,25 +435,20 @@ void Level1::InitScene()
 	basicEffect = &FBO.Add<PostEffect>();
 	basicEffect->Init(width, height);
 
-	auto warmColorEffect = &warmColorEnt.Add<ColorCorrection>();
-	warmColorEffect->SetCubeName("WarmHald.cube");
-	warmColorEffect->Init(width, height);
-
-	basicEffect = &FBO.Add<PostEffect>();
-	basicEffect->Init(width, height);
+	//Load the warm cube effect
+	warmEffect = &warmColorEnt.Add<ColorCorrection>();
+	warmEffect->SetCubeName("WarmHald.cube");
+	warmEffect->Init(width, height);
 
 	//Load the cool cube effect
-	auto coolColorEffect = &coolColorEnt.Add<ColorCorrection>();
-	coolColorEffect->SetCubeName("CoolHald.cube");
-	coolColorEffect->Init(width, height);
-
-	basicEffect = &FBO.Add<PostEffect>();
-	basicEffect->Init(width, height);
+	coolEffect = &coolColorEnt.Add<ColorCorrection>();
+	coolEffect->SetCubeName("CoolHald.cube");
+	coolEffect->Init(width, height);
 
 	//Load the custom cube effect
-	auto customColorEffect = &customColorEnt.Add<ColorCorrection>();
-	customColorEffect->SetCubeName("CustomHald.cube");
-	customColorEffect->Init(width, height);
+	customEffect = &customColorEnt.Add<ColorCorrection>();
+	customEffect->SetCubeName("CustomHald.cube");
+	customEffect->Init(width, height);
 }
 
 void Level1::Update(float dt)
@@ -707,7 +712,7 @@ void Level1::Update(float dt)
 		}
 
 	}
-#pragma endregion
+#pragma endregion 
 
 #pragma region CameraMovement
 
@@ -745,9 +750,9 @@ void Level1::Update(float dt)
 	{
 		camera.SetPosition(glm::vec3(camera.GetPosition().x, camera.GetPosition().y - 10 * dt, camera.GetPosition().z));
 	}
-#pragma endregion
-
-#pragma region Key Toggles 
+#pragma endregion 
+	 
+#pragma region Key Toggles  
 	//No Lighting (on by default)
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 	{
@@ -761,8 +766,8 @@ void Level1::Update(float dt)
 	//Specular Only
 	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
 	{
-		lightNum = 3;
-	}
+		lightNum = 3;   
+	} 
 	//Ambient + Specular + Diffuse
 	if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
 	{
@@ -774,13 +779,17 @@ void Level1::Update(float dt)
 		lightNum = 5;
 	}
 
+	//Toggles effects
 	warmWatch.Poll(window);
 	coolWatch.Poll(window);
 	customWatch.Poll(window);
 
+	diffuseRampWatch.Poll(window);
+	specRampWatch.Poll(window);
+
 #pragma endregion
 
-	if (lightNum < 1 || lightNum > 5)
+	if (lightNum < 1 || lightNum > 7) 
 		lightNum = 1;
 
 	playerShader->SetUniform("u_LightNum", lightNum);
@@ -813,16 +822,22 @@ void Level1::Update(float dt)
 		playerShader->Bind();
 		playerShader->SetUniform("s_Diffuse", 0);
 		drumstickMat.Albedo->Bind(0);
+		playerShader->SetUniform("s_RampTexture", 1);
+		rampMat.Albedo->Bind(1);
 		meshMain.Render(camera, transform);
 
 		floorShader->Bind();
 		floorShader->SetUniform("s_Diffuse", 0);
 		floorMat.Albedo->Bind(0);
+		floorShader->SetUniform("s_RampTexture", 1);
+		rampMat.Albedo->Bind(1);
 		groundMesh.Render(camera, transformGround);
 
 		doorShader->Bind();
 		doorShader->SetUniform("s_Diffuse", 0);
 		doorMat.Albedo->Bind(0);
+		doorShader->SetUniform("s_RampTexture", 1);
+		rampMat.Albedo->Bind(1);
 		doorMesh.Render(camera, transformDoor);
 		doorMat.Albedo->Unbind(0);
 
@@ -840,6 +855,8 @@ void Level1::Update(float dt)
 		wireShader->Bind();
 		wireShader->SetUniform("s_Diffuse", 0);
 		wireMat.Albedo->Bind(0);
+		wireShader->SetUniform("s_RampTexture", 1);
+		rampMat.Albedo->Bind(1);
 
 		if (wireEnt.Get<Wire>().GetIsPowered())
 			wireMeshP.Render(camera, transformWire);
@@ -859,10 +876,10 @@ void Level1::Update(float dt)
 		buttonShader->Bind();
 		buttonShader->SetUniform("s_Diffuse", 0);
 		buttonMat.Albedo->Bind(0);
+		buttonShader->SetUniform("s_RampTexture", 1);
+		rampMat.Albedo->Bind(1);
 		buttonMesh.Render(camera, transformButton);
 		buttonMesh2.Render(camera, transformButton2);
-
-		
 
 		particleSystem.Update(dt, camera);
 
@@ -878,19 +895,21 @@ void Level1::Update(float dt)
 	levelShader->Bind();
 	levelShader->SetUniform("s_Diffuse", 0);
 	wallMat.Albedo->Bind(0);
+	levelShader->SetUniform("s_RampTexture", 1);
+	rampMat.Albedo->Bind(1);
 	leftMesh.Render(camera, transformLeft);
 	rightMesh.Render(camera, transformRight);
 	backMesh.Render(camera, transformBack);
 
-	if (showLevelComplete)
+	if (showLevelComplete) 
 	{
 		lightNum = 1;
 		levelShader->SetUniform("s_Diffuse", 0);
 		completeMat.Albedo->Bind(0);
+		levelShader->SetUniform("s_RampTexture", 1);
+		rampMat.Albedo->Bind(1);
 		completeMesh.Render(orthoCam, transformComplete);
 	}
-
-
 #pragma endregion
 	
 	//Unbind the buffer
@@ -902,21 +921,18 @@ void Level1::Update(float dt)
 		warmEffect->ApplyEffect(basicEffect);
 		warmEffect->DrawToScreen();
 	}
-
 	//If cool effect is toggled, draw it
 	else if (coolActive)
 	{
 		coolEffect->ApplyEffect(basicEffect);
 		coolEffect->DrawToScreen();
 	}
-
 	//If custom effect is toggled, draw it
 	else if (customActive)
 	{
 		customEffect->ApplyEffect(basicEffect);
 		customEffect->DrawToScreen();
 	}
-	
 	//Draw the default color correction
 	else
 	{
