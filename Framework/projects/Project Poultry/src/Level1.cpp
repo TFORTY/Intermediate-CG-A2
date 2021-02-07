@@ -41,9 +41,12 @@ Level1::Level1(std::string sceneName, GLFWwindow* wind)
 	completeEnt = Entity::Create();
 	tutEnt = Entity::Create();
 
-	//Create and entity object
+	//Create an entity object for color cube
 	FBO = Entity::Create();
 	warmColorEnt = Entity::Create();
+	coolColorEnt = Entity::Create();
+	customColorEnt = Entity::Create();
+
 
 	drumstick = ModelManager::FindMesh(drumFile);
 	floor = ModelManager::FindMesh(floorFile);
@@ -425,6 +428,22 @@ void Level1::InitScene()
 	auto warmColorEffect = &warmColorEnt.Add<ColorCorrection>();
 	warmColorEffect->SetCubeName("WarmHald.cube");
 	warmColorEffect->Init(width, height);
+
+	basicEffect = &FBO.Add<PostEffect>();
+	basicEffect->Init(width, height);
+
+	//Load the cool cube effect
+	auto coolColorEffect = &coolColorEnt.Add<ColorCorrection>();
+	coolColorEffect->SetCubeName("CoolHald.cube");
+	coolColorEffect->Init(width, height);
+
+	basicEffect = &FBO.Add<PostEffect>();
+	basicEffect->Init(width, height);
+
+	//Load the custom cube effect
+	auto customColorEffect = &customColorEnt.Add<ColorCorrection>();
+	customColorEffect->SetCubeName("CustomHald.cube");
+	customColorEffect->Init(width, height);
 }
 
 void Level1::Update(float dt)
@@ -756,6 +775,8 @@ void Level1::Update(float dt)
 	}
 
 	warmWatch.Poll(window);
+	coolWatch.Poll(window);
+	customWatch.Poll(window);
 
 #pragma endregion
 
@@ -774,10 +795,14 @@ void Level1::Update(float dt)
 	//Get the color correction effects
 	basicEffect = &FBO.Get<PostEffect>();
 	warmEffect = &warmColorEnt.Get<ColorCorrection>();
+	coolEffect = &coolColorEnt.Get<ColorCorrection>();
+	customEffect = &customColorEnt.Get<ColorCorrection>();
 
 	//Clear the color correction effects
 	basicEffect->Clear();
 	warmEffect->Clear();
+	coolEffect->Clear();
+	customEffect->Clear();
 
 	//Bind the buffer
 	basicEffect->BindBuffer(0);
@@ -877,6 +902,21 @@ void Level1::Update(float dt)
 		warmEffect->ApplyEffect(basicEffect);
 		warmEffect->DrawToScreen();
 	}
+
+	//If cool effect is toggled, draw it
+	else if (coolActive)
+	{
+		coolEffect->ApplyEffect(basicEffect);
+		coolEffect->DrawToScreen();
+	}
+
+	//If custom effect is toggled, draw it
+	else if (customActive)
+	{
+		customEffect->ApplyEffect(basicEffect);
+		customEffect->DrawToScreen();
+	}
+	
 	//Draw the default color correction
 	else
 	{
